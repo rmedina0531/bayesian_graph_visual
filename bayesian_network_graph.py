@@ -51,28 +51,21 @@ class Bayesian_graph(BayesianNetwork):
             
         return [labels, data]
         
-    #def show_data(self, beliefs):
-        #data = self.get_data(beliefs)
-        #labels = data[0]
-        #elements = data[1]
+    def show_data(self, beliefs):
+        data = self.get_data(beliefs)
+        labels = data[0]
+        elements = data[1]
         
-        #w = 0.2
-        #bars = []
-        #first bar
-        #bars.append(np.arange(len(labels)))
-        #add the rest if they exists
-        #for i in range(1, len(data)):
-            #bars.append([j+w for j in bars[i-1]])
-            
-        #for i in range(len(bars)):
-            
-            #plt.bar(bars[i], elements[i], w, label=self.state_data[labels[i]].get_choices())
+        element_labels = self.state_data[labels[1]].get_choices()
         
-        #plt.xlabel("label1")
-        #plt.ylabel("label2")
-        #plt.title("Title")
-        #plt.legend()
-        #plt.xticks(bars[0], labels)
-        #plt.show()
+        fig1, ax1 = plt.subplots()
+        ax1.pie(elements[1], labels=element_labels, autopct='%1.1f%%',
+                shadow=True, startangle=90)
+        ax1.axis('equal')
+        
+        plt.show()
+        
+        
+        
 
     
