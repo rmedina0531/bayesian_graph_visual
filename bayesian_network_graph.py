@@ -55,13 +55,25 @@ class Bayesian_graph(BayesianNetwork):
         data = self.get_data(beliefs)
         labels = data[0]
         elements = data[1]
+    
+        fig, axs = plt.subplots(len(labels))
         
-        element_labels = self.state_data[labels[1]].get_choices()
+        if len(labels) > 1:
         
-        fig1, ax1 = plt.subplots()
-        ax1.pie(elements[1], labels=element_labels, autopct='%1.1f%%',
-                shadow=True, startangle=90)
-        ax1.axis('equal')
+            for i in range(len(labels)):
+                element_labels = self.state_data[labels[i]].get_choices()
+                axs[i].pie(elements[i], labels=element_labels, autopct='%1.1f%%',
+                        shadow=True, startangle=90)
+                axs[i].axis('equal')
+                axs[i].set_title(labels[i])
+        
+        else:
+            element_labels = self.state_data[labels[0]].get_choices()
+            axs.pie(elements[0], labels=element_labels, autopct='%1.1f%%',
+                    shadow=True, startangle=90)
+            axs.axis('equal')
+            axs.set_title(labels[0])
+        
         
         plt.show()
         

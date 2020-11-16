@@ -50,6 +50,54 @@ def generate_test_network():
     network.bake()
     return network
 
+def generate_test_network2():
+    exam_level = DiscreteDistribution({'Difficult':0.7, 'Easy':0.3})
+    iq_level = DiscreteDistribution({'High':0.8, 'Low':0.2})
+
+    marks = ConditionalProbabilityTable(
+        [['High', 'Difficult', 'High', 0.6],
+        ['High', 'Difficult', 'Low', 0.4],
+        ['High', 'Easy', 'High', 0.9],
+        ['High', 'Easy', 'Low', 0.1],
+        ['Low', 'Difficult', 'High', 0.5],
+        ['Low', 'Difficult', 'Low', 0.5],
+        ['Low', 'Easy', 'High', 0.8],
+        ['Low', 'Easy', 'Low', 0.2]], [iq_level, exam_level])
+
+    apt_score = ConditionalProbabilityTable(
+        [['High', 'High', 0.75],
+        ['High', 'Low', 0.25],
+        ['Low', 'High', 0.4],
+        ['Low', 'Low', 0.6]], [iq_level])
+
+    admission = ConditionalProbabilityTable(
+        [['High', 'True', 0.6],
+        ['High', 'False', 0.4],
+        ['Low', 'True', 0.9],
+        ['Low', 'False', 0.1]], [marks])
+        
+    exam_level_state = State_Data(State( exam_level, name='exam_level'),
+                                  ['Difficult', 'Easy'])
+    iq_level_state = State_Data(State( iq_level, name='iq_level'),
+                                ['High', 'Low'])
+    marks_state = State_Data(State( marks, name='marks'),
+                             ['High', 'Low'])
+    apt_score_state = State_Data(State( apt_score, name='apt_score'),
+                                 ['High', 'Low'])
+    admission_state = State_Data(State( admission, name='admission'),
+                                 ['True', 'False'])
+    
+    network = Bayesian_graph( "Admissions Chances" )
+    network.add_states(exam_level_state, iq_level_state, 
+                    marks_state, apt_score_state, admission_state)
+    network.add_edge(exam_level_state, marks_state)
+    network.add_edge(iq_level_state, marks_state)
+    network.add_edge(iq_level_state, apt_score_state)
+    network.add_edge(marks_state, admission_state)
+    network.bake()
+    
+    return network
+
 class TestGraphMethods(unittest.TestCase):
     
     ##check to see if new class is working
@@ -72,9 +120,15 @@ class TestGraphMethods(unittest.TestCase):
         self.assertEqual(data[0][1], 'monty')
         
         
-    def test_graph(self):
-        network = generate_test_network()
-        beliefs = network.predict_proba({'guest': 'A'})
+    #def test_graph(self):
+        #network = generate_test_network()
+        #beliefs = network.predict_proba({'guest': 'A'})
+        #print(network.get_data(beliefs))
+        #network.show_data(beliefs)
+        
+    def test_graph2(self):
+        network = generate_test_network2()
+        beliefs = network.predict_proba({'admission': 'True'})
         print(network.get_data(beliefs))
         network.show_data(beliefs)
         
