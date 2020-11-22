@@ -75,11 +75,14 @@ class Bayesian_graph(BayesianNetwork):
         data = self.get_data(beliefs)
         labels = data[0]
         elements = data[1]
-    
+    	
+		#the following is set up for displaying the graphs
         fig, axs = plt.subplots(len(labels))
         
+		#pulls label names for the graphs
         if len(labels) > 1:
-        
+        	
+			#adds the data to the appropriate graph per element in the data array
             for i in range(len(labels)):
                 element_labels = self.state_data[labels[i]].get_choices()
                 axs[i].pie(elements[i], labels=element_labels, autopct='%1.1f%%',
@@ -88,6 +91,7 @@ class Bayesian_graph(BayesianNetwork):
                 axs[i].set_title(labels[i])
         
         else:
+			#run only when there is one graph to display
             element_labels = self.state_data[labels[0]].get_choices()
             axs.pie(elements[0], labels=element_labels, autopct='%1.1f%%',
                     shadow=True, startangle=90)

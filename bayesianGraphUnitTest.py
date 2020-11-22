@@ -3,9 +3,24 @@ from pomegranate import *
 from bayesian_network_graph import Bayesian_graph, State_Data
 
 def generate_test_network():
+	#generate bayesian network to test
+	#Test case is implementation of the monty hall problem
+	#A, B, C are doors
+	#guest_door is the door selected by the guest
+	#prize_door is the door that contains the prize
+	#monty_door is the door revealed based on the guest_door and monty_door
+
+	#since the guest door and discrete door are independent, a discrete distrubution
+	#table is set up for them with the probabilities of each option
     guest_door = DiscreteDistribution({'A':1.0/3, 'B':1.0/3, 'C':1.0/3})
     prize_door = DiscreteDistribution({'A':1.0/3, 'B':1.0/3, 'C':1.0/3})
 
+	#monty door is based on the guest_door and prize_door so a
+	#conditional probabilitie table is set up
+	#the format is the following
+	#[x,y,z,p] where [x,y] are based on the definitions at the end of the table
+	#z is the choice possible of the current node
+	#and p is the probability of that particular outcome
     monty_door = ConditionalProbabilityTable(
         [[ 'A', 'A', 'A', 0.0],
         [ 'A', 'A', 'B', 0.5],
@@ -39,6 +54,9 @@ def generate_test_network():
     #s2 = State( prize_door, name='prize')
     #s3 = State( monty_door, name='monty')
     
+	#definitions of states are using the new state_data, used for storing the
+	#choices for use in future graphing
+
     state1 = State_Data(State( guest_door, name='guest'), ['A', 'B', 'C'])
     state2 = State_Data(State( prize_door, name='prize'), ['A', 'B', 'C'])
     state3 = State_Data(State( monty_door, name='monty'), ['A', 'B', 'C'])
@@ -51,6 +69,7 @@ def generate_test_network():
     return network
 
 def generate_test_network2():
+	#similar to above, generates another test network
     exam_level = DiscreteDistribution({'Difficult':0.7, 'Easy':0.3})
     iq_level = DiscreteDistribution({'High':0.8, 'Low':0.2})
 
@@ -101,16 +120,23 @@ def generate_test_network2():
 class TestGraphMethods(unittest.TestCase):
     
     ##check to see if new class is working
+	##checks to make sre that state_data returns the appropriate
+	##number of states in the graph
     def test_extended_bayesian_graph(self):
         network = generate_test_network()
         self.assertEqual(len(network.state_data),  3) 
     
+	##checks that the network_get_data() returns the appropriate data points
+	##from the JSON jenerated buy the superclass
     def test_get_data_length(self):
         network = generate_test_network()
         beliefs = network.predict_proba({'guest': 'A'})
         data = network.get_data(beliefs)
         self.assertEqual(len(data), 2)
     
+	#check that the data returned from get_data is the expected value
+	#in this case the first element should be prize, and the second element
+	# is monty
     def test_get_data_length2(self):
         network = generate_test_network()
         beliefs = network.predict_proba({'guest': 'A'})
@@ -120,12 +146,16 @@ class TestGraphMethods(unittest.TestCase):
         self.assertEqual(data[0][1], 'monty')
         
         
-    #def test_graph(self):
-        #network = generate_test_network()
-        #beliefs = network.predict_proba({'guest': 'A'})
-        #print(network.get_data(beliefs))
-        #network.show_data(beliefs)
+	#runs code to display the graph to check functionality of
+	#the visual representation
+    def test_graph(self):
+        network = generate_test_network()
+        beliefs = network.predict_proba({'guest': 'A'})
+        print(network.get_data(beliefs))
+        network.show_data(beliefs)
         
+	#runs code to display the graph to check functionality of
+	#the visual representation
     def test_graph2(self):
         network = generate_test_network2()
         beliefs = network.predict_proba({'admission': 'True'})
