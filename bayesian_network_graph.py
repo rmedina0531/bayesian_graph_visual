@@ -70,28 +70,36 @@ class Bayesian_graph(BayesianNetwork):
 			#adds the data to the appropriate graph per element in the data array
             row = 0
             col = 0
-            for i in range(len(data)):
-                graph_name = data[i][0]
-                element_labels = [x[0] for x in data[i][1:]]
-                graph_data = [x[1] for x in data[i][1:]]
-                
-                #print(grid)
-                if grid[0] > 1:
-                    axs[row,col].pie(graph_data, labels=element_labels, autopct='%1.1f%%',
-                            shadow=True, startangle=90)
-                    axs[row,col].axis('equal')
-                    axs[row,col].set_title(graph_name)
-                    
+            for i in range((grid[0]*grid[1])):
+                #make blank
+                if i >= len(data):
+                    print('turned off')
+                    axs[row,col].axis('off')
                     col += 1
                     if col % grid[1] == 0:
                         col = 0
                         row += 1
                 else:
-                    axs[col].pie(graph_data, labels=element_labels, autopct='%1.1f%%',
-                            shadow=True, startangle=90)
-                    axs[col].axis('equal')
-                    axs[col].set_title(graph_name)
-                    col += 1
+                    graph_name = data[i][0]
+                    element_labels = [x[0] for x in data[i][1:]]
+                    graph_data = [x[1] for x in data[i][1:]]
+                    
+                    if grid[0] > 1:
+                        axs[row,col].pie(graph_data, labels=element_labels, autopct='%1.1f%%',
+                                shadow=True, startangle=90)
+                        axs[row,col].axis('equal')
+                        axs[row,col].set_title(graph_name)
+                        
+                        col += 1
+                        if col % grid[1] == 0:
+                            col = 0
+                            row += 1
+                    else:
+                        axs[col].pie(graph_data, labels=element_labels, autopct='%1.1f%%',
+                                shadow=True, startangle=90)
+                        axs[col].axis('equal')
+                        axs[col].set_title(graph_name)
+                        col += 1
         
         else:
 			#run only when there is one graph to display
