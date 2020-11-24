@@ -1,4 +1,4 @@
-from bayesian_network_graph import Bayesian_graph, State_Data
+from bayesian_network_graph import Bayesian_graph
 from pomegranate import *
 
 def main():
@@ -23,10 +23,10 @@ def main():
          ['True', 'True', 'False', 0.01],
          ['True', 'True', 'True', 0.99]], [sprinkler_table, rain_table])
     
-    state1 = State_Data(State(cloudy_table, name='cloudy'), ['True', 'False'])
-    state2 = State_Data(State(sprinkler_table, name='sprinkler'), ['True', 'False'])
-    state3 = State_Data(State(rain_table, name='rain'), ['True', 'False'])
-    state4 = State_Data(State(wet_grass_table, name='wet grass'), ['True', 'False'])
+    state1 = State(cloudy_table, name='cloudy')
+    state2 = State(sprinkler_table, name='sprinkler')
+    state3 = State(rain_table, name='rain')
+    state4 = State(wet_grass_table, name='wet grass')
     
     network = Bayesian_graph('Wet grass Example')
     network.add_states(state1, state2, state3, state4)
@@ -36,11 +36,11 @@ def main():
     network.add_edge(state3, state4)
     network.bake()
     
-    #beliefs = network.predict_proba({'wet grass':'True'})
-    #print(beliefs)
-    #network.show_data(beliefs)
-    #DiscreteDistribution
-    #ConditionalProbabilityTable
+    beliefs = network.predict_proba({'wet grass':'True'})
+    print(beliefs)
+    network.show_data(beliefs)
+
+
     beliefs = network.predict_proba({'wet grass':'True', 'rain':'True'})
     print(network.get_data(beliefs))
     network.show_data(beliefs)

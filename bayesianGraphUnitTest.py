@@ -1,6 +1,6 @@
 import unittest
 from pomegranate import *
-from bayesian_network_graph import Bayesian_graph, State_Data
+from bayesian_network_graph import Bayesian_graph
 
 def generate_test_network():
 	#generate bayesian network to test
@@ -57,10 +57,9 @@ def generate_test_network():
 	#definitions of states are using the new state_data, used for storing the
 	#choices for use in future graphing
 
-    state1 = State_Data(State( guest_door, name='guest'), ['A', 'B', 'C'])
-    state2 = State_Data(State( prize_door, name='prize'), ['A', 'B', 'C'])
-    state3 = State_Data(State( monty_door, name='monty'), ['A', 'B', 'C'])
-
+    state1 = State( guest_door, name='guest')
+    state2 = State( prize_door, name='prize')
+    state3 = State( monty_door, name='monty')
     network = Bayesian_graph( "Monty Hall Problem" )
     network.add_states(state1, state2, state3)
     network.add_edge(state1, state3)
@@ -95,16 +94,11 @@ def generate_test_network2():
         ['Low', 'True', 0.9],
         ['Low', 'False', 0.1]], [marks])
         
-    exam_level_state = State_Data(State( exam_level, name='exam_level'),
-                                  ['Difficult', 'Easy'])
-    iq_level_state = State_Data(State( iq_level, name='iq_level'),
-                                ['High', 'Low'])
-    marks_state = State_Data(State( marks, name='marks'),
-                             ['High', 'Low'])
-    apt_score_state = State_Data(State( apt_score, name='apt_score'),
-                                 ['High', 'Low'])
-    admission_state = State_Data(State( admission, name='admission'),
-                                 ['True', 'False'])
+    exam_level_state = State( exam_level, name='exam_level')
+    iq_level_state = State( iq_level, name='iq_level')
+    marks_state = State( marks, name='marks')
+    apt_score_state = State( apt_score, name='apt_score')
+    admission_state = State( admission, name='admission')
     
     network = Bayesian_graph( "Admissions Chances" )
     network.add_states(exam_level_state, iq_level_state, 
@@ -119,12 +113,6 @@ def generate_test_network2():
 
 class TestGraphMethods(unittest.TestCase):
     
-    ##check to see if new class is working
-	##checks to make sre that state_data returns the appropriate
-	##number of states in the graph
-    def test_extended_bayesian_graph(self):
-        network = generate_test_network()
-        self.assertEqual(len(network.state_data),  3) 
     
 	##checks that the network_get_data() returns the appropriate data points
 	##from the JSON jenerated buy the superclass
@@ -132,35 +120,47 @@ class TestGraphMethods(unittest.TestCase):
         network = generate_test_network()
         beliefs = network.predict_proba({'guest': 'A'})
         data = network.get_data(beliefs)
-        print(data)
-        #self.assertEqual(len(data), 2)
+        #print(data)
+        self.assertEqual(len(data), len(network.states))
     
-	#check that the data returned from get_data is the expected value
-	#in this case the first element should be prize, and the second element
-	# is monty
-    #def test_get_data_length2(self):
-        #network = generate_test_network()
-        #beliefs = network.predict_proba({'guest': 'A'})
-        #data = network.get_data(beliefs)
-        #self.assertEqual(data[0][0], 'prize')
-        #self.assertEqual(data[0][1], 'monty')
+	#check that all the corrects states are being outputted in
+	#the appropriate place in the list
+    def test_get_data_length2(self):
+        network = generate_test_network()
+        beliefs = network.predict_proba({'guest': 'A'})
+        data = network.get_data(beliefs)
+        valid_states = ['prize', 'monty', 'guest']
+        for element in data:
+            self.assertIn(element[0], valid_states)
         
         
-	#runs code to display the graph to check functionality of
-	#the visual representation
+	#check that all beliefs are the correct data
     #def test_graph(self):
         #network = generate_test_network()
         #beliefs = network.predict_proba({'guest': 'A'})
-        #print(network.get_data(beliefs))
+        #data = network.get_data(beliefs)
+        #correct_values = {'monty': 
+                              #['monty', ['A', 0.0], ['B',0.49999999999999994], ['C', 0.49999999999999994]], 
+                          #'guest':
+                              #['guest', ['A', 1]],
+                          #'prize':
+                            #['prize', ['A', 0.3333333333333333], ['B', 0.3333333333333333], ['C', 0.3333333333333333]]}
+
+        #for d in data:
+            #for element in d:
+                #self.assertIn(element, correct_values[d[0]])
         #network.show_data(beliefs)
         
 	#runs code to display the graph to check functionality of
 	#the visual representation
-    #def test_graph2(self):
-        #network = generate_test_network2()
-        #beliefs = network.predict_proba({'admission': 'True'})
+    def test_graph2(self):
+        network = generate_test_network()
+        beliefs = network.predict_proba({'guest': 'A'})
+        network2 = generate_test_network2()
+        beliefs2 = network2.predict_proba({'admission': 'True'})
         #print(network.get_data(beliefs))
-        #network.show_data(beliefs)
+        network.show_data(beliefs)
+        network2.show_data(beliefs2)
         
     
 if __name__== '__main__':
