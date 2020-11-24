@@ -63,7 +63,7 @@ class Bayesian_graph(BayesianNetwork):
             grid = self.make_plot_grid(len(data))
             fig, axs = plt.subplots(grid[0], grid[1])
             fig.canvas.set_window_title('Probabilities')
-            print(axs)
+            #print(axs)
             #print(type(fig))
             #print(type(axs))
             #fig.tight_layout(pad=1.5)
@@ -75,7 +75,7 @@ class Bayesian_graph(BayesianNetwork):
                 element_labels = [x[0] for x in data[i][1:]]
                 graph_data = [x[1] for x in data[i][1:]]
                 
-                print(grid)
+                #print(grid)
                 if grid[0] > 1:
                     axs[row,col].pie(graph_data, labels=element_labels, autopct='%1.1f%%',
                             shadow=True, startangle=90)
