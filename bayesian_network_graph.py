@@ -1,11 +1,10 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from pomegranate import *
-
 #dependencies
 #cython 0.29.21
 #pomegranate 0.13.2
 
+import numpy as np
+import matplotlib.pyplot as plt
+from pomegranate import *
 
 ##state cointainer used for storing the possible choices of the state
 #Used for graphing purposes
