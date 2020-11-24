@@ -38,7 +38,17 @@ class Bayesian_graph(BayesianNetwork):
             
         return data
         
-        
+    def make_plot_grid(self, num_of_plots):
+        possible_grid_sizes = [2,3,4,6,9]
+        grids = {2:[1,2], 3:[1,3], 4:[2,2], 6:[2,3], 9:[3,3]}
+        grids[5] = grids[6]
+        for i in range(7,10):
+            grids[i] = grids[9]
+            
+        return grids[num_of_plots]
+
+    
+    
     #uses the netowrk and the belifs calculated to project a pie chart
     #of all the states not being ovserved and the percentages of their
     # possibilities
@@ -47,25 +57,46 @@ class Bayesian_graph(BayesianNetwork):
         data = self.get_data(beliefs)
     	
 		#the following is set up for displaying the graphs
-        fig, axs = plt.subplots(len(data))
-        fig.tight_layout(pad=1.5)
         
 		#pulls label names for the graphs
         if len(data) > 1:
-        	
+            grid = self.make_plot_grid(len(data))
+            fig, axs = plt.subplots(grid[0], grid[1])
+            fig.canvas.set_window_title('Probabilities')
+            print(axs)
+            #print(type(fig))
+            #print(type(axs))
+            #fig.tight_layout(pad=1.5)
 			#adds the data to the appropriate graph per element in the data array
+            row = 0
+            col = 0
             for i in range(len(data)):
                 graph_name = data[i][0]
                 element_labels = [x[0] for x in data[i][1:]]
                 graph_data = [x[1] for x in data[i][1:]]
                 
-                axs[i].pie(graph_data, labels=element_labels, autopct='%1.1f%%',
-                        shadow=True, startangle=90)
-                axs[i].axis('equal')
-                axs[i].set_title(graph_name)
+                print(grid)
+                if grid[0] > 1:
+                    axs[row,col].pie(graph_data, labels=element_labels, autopct='%1.1f%%',
+                            shadow=True, startangle=90)
+                    axs[row,col].axis('equal')
+                    axs[row,col].set_title(graph_name)
+                    
+                    col += 1
+                    if col % grid[1] == 0:
+                        col = 0
+                        row += 1
+                else:
+                    axs[col].pie(graph_data, labels=element_labels, autopct='%1.1f%%',
+                            shadow=True, startangle=90)
+                    axs[col].axis('equal')
+                    axs[col].set_title(graph_name)
+                    col += 1
         
         else:
 			#run only when there is one graph to display
+            fig, axs = plt.subplots()
+            fig.canvas.set_window_title('Probabilities')
             graph_name = data[0]
             element_labels = [x[0] for x in data[1:]]
             graph_data = [x[1] for x in data[1:]]
@@ -82,7 +113,7 @@ class Bayesian_graph(BayesianNetwork):
             #axs.axis('equal')
             #axs.set_title(labels[0])
         
-        
+
         plt.show()
         
         
