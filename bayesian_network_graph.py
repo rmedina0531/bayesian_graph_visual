@@ -53,22 +53,30 @@ class Bayesian_graph(BayesianNetwork):
     #returns the labels of the belief states as well as the percentages of each
     #possible choices
     def get_data(self, beliefs):
-        labels = []
         data = []
+        print(len(self.states))
+        print(len(beliefs))
         for state, belief in zip(self.states, beliefs):
-            if type(belief) != type("srt"):
-                labels.append(state.name)
-                label_data = []
+            try:
+            #if type(belief) != type("srt"):
+                data_element = []
+                data_element.append(state.name)
                 for p in belief.parameters[0]:
-                    label_data.append(belief.parameters[0][p])
-                data.append(label_data)
+                    data_point = [p,belief.parameters[0][p]]
+                    data_element.append(data_point)
+                data.append(data_element)
+            except:
+                data_element = []
+                data_element.append(state.name)
+                data_element.append([belief, 1])
+                data.append(data_element)
         
         #data = list(zip(*data))
         #data2 = []
         #for d in data:
             #data2.append(list(d))
             
-        return [labels, data]
+        return data
         
         
     #uses the netowrk and the belifs calculated to project a pie chart
@@ -77,30 +85,42 @@ class Bayesian_graph(BayesianNetwork):
     #Dynamically generated to function with any Bayesian network
     def show_data(self, beliefs):
         data = self.get_data(beliefs)
-        labels = data[0]
-        elements = data[1]
     	
 		#the following is set up for displaying the graphs
-        fig, axs = plt.subplots(len(labels))
+        fig, axs = plt.subplots(len(data))
+        fig.tight_layout(pad=1.5)
         
 		#pulls label names for the graphs
-        if len(labels) > 1:
+        if len(data) > 1:
         	
 			#adds the data to the appropriate graph per element in the data array
-            for i in range(len(labels)):
-                element_labels = self.state_data[labels[i]].get_choices()
-                axs[i].pie(elements[i], labels=element_labels, autopct='%1.1f%%',
+            for i in range(len(data)):
+                graph_name = data[i][0]
+                element_labels = [x[0] for x in data[i][1:]]
+                graph_data = [x[1] for x in data[i][1:]]
+                
+                axs[i].pie(graph_data, labels=element_labels, autopct='%1.1f%%',
                         shadow=True, startangle=90)
                 axs[i].axis('equal')
-                axs[i].set_title(labels[i])
+                axs[i].set_title(graph_name)
         
         else:
 			#run only when there is one graph to display
-            element_labels = self.state_data[labels[0]].get_choices()
-            axs.pie(elements[0], labels=element_labels, autopct='%1.1f%%',
+            graph_name = data[0]
+            element_labels = [x[0] for x in data[1:]]
+            graph_data = [x[1] for x in data[1:]]
+            
+            axs.pie(graph_data, labels=element_labels, autopct='%1.1f%%',
                     shadow=True, startangle=90)
             axs.axis('equal')
-            axs.set_title(labels[0])
+            axs.set_title(graph_name)
+			
+			
+            #element_labels = self.state_data[labels[0]].get_choices()
+            #axs.pie(elements[0], labels=element_labels, autopct='%1.1f%%',
+                    #shadow=True, startangle=90)
+            #axs.axis('equal')
+            #axs.set_title(labels[0])
         
         
         plt.show()

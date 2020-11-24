@@ -36,13 +36,13 @@ def main():
     network.add_edge(state3, state4)
     network.bake()
     
-    beliefs = network.predict_proba({'wet grass':'True'})
-    print(beliefs)
-    network.show_data(beliefs)
+    #beliefs = network.predict_proba({'wet grass':'True'})
+    #print(beliefs)
+    #network.show_data(beliefs)
     #DiscreteDistribution
     #ConditionalProbabilityTable
     beliefs = network.predict_proba({'wet grass':'True', 'rain':'True'})
-    print(beliefs)
+    print(network.get_data(beliefs))
     network.show_data(beliefs)
      
 
