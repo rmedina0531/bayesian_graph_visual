@@ -37,7 +37,7 @@ def main():
     network.bake()
     
     beliefs = network.predict_proba({'wet grass':'True'})
-    print(beliefs)
+    print(network.get_data(beliefs))
     network.show_data(beliefs)
 
 
