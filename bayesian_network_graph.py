@@ -73,7 +73,7 @@ class Bayesian_graph(BayesianNetwork):
             for i in range((grid[0]*grid[1])):
                 #make blank
                 if i >= len(data):
-                    print('turned off')
+                    #print('turned off')
                     axs[row,col].axis('off')
                     col += 1
                     if col % grid[1] == 0:

@@ -1,6 +1,22 @@
 from bayesian_network_graph import Bayesian_graph
 from pomegranate import *
 
+def original(network):
+    beliefs = network.predict_proba({'wet grass':'True'})
+    print(beliefs)
+    print('===========================')
+    beliefs = network.predict_proba({'wet grass':'True', 'rain':'True'})
+    print(beliefs)
+    
+def extended(network):
+    beliefs = network.predict_proba({'wet grass':'True'})
+    print(network.get_data(beliefs))
+    network.show_data(beliefs)
+
+    beliefs = network.predict_proba({'wet grass':'True', 'rain':'True'})
+    print(network.get_data(beliefs))
+    network.show_data(beliefs)
+    
 def main():
     cloudy_table = DiscreteDistribution({'True':0.5, 'False':0.5})
     sprinkler_table = ConditionalProbabilityTable(
@@ -36,14 +52,8 @@ def main():
     network.add_edge(state3, state4)
     network.bake()
     
-    beliefs = network.predict_proba({'wet grass':'True'})
-    print(network.get_data(beliefs))
-    network.show_data(beliefs)
-
-
-    beliefs = network.predict_proba({'wet grass':'True', 'rain':'True'})
-    print(network.get_data(beliefs))
-    network.show_data(beliefs)
+    #original(network)
+    extended(network)
      
 
 if __name__ == '__main__':
